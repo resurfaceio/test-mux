@@ -1,0 +1,18 @@
+version: '3.2'
+
+services:
+  resurface:
+    image: resurfaceio/resurface:2.3.1
+    container_name: mux_resurface
+    ports:
+      - '4000:4000'
+      - '4001:4001'
+      - '4002:4002'
+
+  mux:
+    image: test-mux
+    container_name: mux
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
