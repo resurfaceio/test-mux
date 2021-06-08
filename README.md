@@ -4,3 +4,4 @@ Example API built with gorilla/mux
 ## Requirements
 
 * docker
+* docker-compose
