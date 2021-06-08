@@ -1,13 +1,14 @@
-PROJECT_NAME=test-gorilla/mux
+PROJECT_NAME=test-mux
 
 start:
-	@sudo docker stop resurface || true
-	@sudo docker build -f Dockerfile -t test-mux --no-cache .
-	@sudo docker run -detach -p 4000:4000 -t test-mux
+	@docker stop resurface || true
+	@docker build -f Dockerfile -t test-mux --no-cache .
+	@docker run -detach -p 4000:4000 --name resurface-mux -t test-mux
 	# @docker-compose up --detach
 
 stop:
-	echo "stop script here"
+	@docker stop resurface-mux
+	@docker image rmi -f test-mux
 
 restart:
 	echo "restart script here"
@@ -15,5 +16,5 @@ restart:
 test:
 	echo "test script here"
 
-clean:
-	@sudo docker system prune -a
+clear:
+	@docker system prune -a
