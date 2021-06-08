@@ -1,9 +1,9 @@
 PROJECT_NAME=test-gorilla/mux
 
 start:
-	@docker stop resurface || true
-	@docker build -t test-mux --no-cache .
-	# @docker start test-mux
+	@sudo docker stop resurface || true
+	@sudo docker build -f Dockerfile -t test-mux --no-cache .
+	@sudo docker run -detach -p 4000:4000 -t test-mux
 	# @docker-compose up --detach
 
 stop:
@@ -15,5 +15,5 @@ restart:
 test:
 	echo "test script here"
 
-clear:
-	@docker system prune -a
+clean:
+	@sudo docker system prune -a
