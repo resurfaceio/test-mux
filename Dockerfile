@@ -1,14 +1,12 @@
 FROM golang:1.16
 
-WORKDIR /src
+WORKDIR /app
 
-COPY . .
-RUN ls 
+COPY /src .
 
 RUN go mod download
 
-RUN ls .
 RUN go build .
 
-EXPOSE 5000
-CMD [/src/main]
+EXPOSE 4000
+CMD ["./test-mux"]
