@@ -14,10 +14,11 @@ ping:
 	@curl "http://localhost:8080/ping"
 
 restart:
-	echo "restart script here"
+	@docker-compose stop
+	@docker-compose up --detach
 
 test:
-	echo "test script here"
+	echo "test script cmd goes here"
 
 clear:
 	@docker system prune -a
