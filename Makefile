@@ -10,6 +10,9 @@ stop:
 	@docker-compose down --volumes --remove-orphans
 	@docker image rmi -f test-mux
 
+ping:
+	@curl "http://localhost:8080/ping"
+
 restart:
 	echo "restart script here"
 

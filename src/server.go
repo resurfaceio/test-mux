@@ -16,18 +16,14 @@ import (
 const defaultPort = "8080"
 
 type message struct {
-	msg string
+	Msg string `json:"msg"`
 }
 
-func pong() []byte { // return JSON response as a byte slice
-	m := message{"pong"}
-	j, err := json.Marshal(m)
+func pong(w http.ResponseWriter, r *http.Request) { // handler for test ping call
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return j
+	w.Header().Set("Content-Type", "application/json")
+	msg := message{Msg: "pong"}
+	json.NewEncoder(w).Encode(msg)
 }
 
 func main() {
@@ -42,10 +38,7 @@ func main() {
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
-	// router.Handle("/ping", pong())
-
-	// http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	// http.Handle("/query", srv)
+	router.HandleFunc("/ping", pong)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
