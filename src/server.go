@@ -26,6 +26,25 @@ func pong(w http.ResponseWriter, r *http.Request) { // handler for test ping cal
 	json.NewEncoder(w).Encode(msg)
 }
 
+func LoggerMiddlewareFunc(h http.Handler) http.Handler {
+
+	// option struct to pass to logger
+	// opt := logger.Options{
+	// 	Rules:   "",
+	// 	Url:     "",
+	// 	Enabled: true,
+	// 	Queue:   make([]string, 0),
+	// }
+
+	// // create new http logger instance
+	// logger, err := logger.NewHttpLogger(opt)
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Whale hello there, from the middleware!", r.URL)
+		h.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -39,6 +58,8 @@ func main() {
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", srv)
 	router.HandleFunc("/ping", pong)
+
+	router.Use(LoggerMiddlewareFunc)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, router))
