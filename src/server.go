@@ -9,6 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/mux"
+	"github.com/resurfaceio/logger-go/src/logger"
 	"github.com/resurfaceio/test-mux/graph"
 	"github.com/resurfaceio/test-mux/graph/generated"
 )
@@ -29,18 +30,30 @@ func pong(w http.ResponseWriter, r *http.Request) { // handler for test ping cal
 func LoggerMiddlewareFunc(h http.Handler) http.Handler {
 
 	// option struct to pass to logger
-	// opt := logger.Options{
-	// 	Rules:   "",
-	// 	Url:     "",
-	// 	Enabled: true,
-	// 	Queue:   make([]string, 0),
-	// }
+	opt := logger.Options{
+		Rules:   "allow_http_url",
+		Url:     "http://resurface:4001/message",
+		Enabled: true,
+		Queue:   nil,
+	}
 
-	// // create new http logger instance
-	// logger, err := logger.NewHttpLogger(opt)
+	// create new logger instance
+	Logger, err := logger.NewNetHttpClientLoggerOptions(opt)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Whale hello there, from the middleware!", r.URL)
+		// log.Println(r.URL.String())
+
+		resp, err := Logger.Do(r)
+		if err != nil {
+			log.SetFlags(log.LstdFlags | log.Lshortfile)
+			log.Fatal(err)
+		}
+		log.Println("Response: ", resp)
+
 		h.ServeHTTP(w, r)
 	})
 }
