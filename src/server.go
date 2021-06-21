@@ -76,7 +76,20 @@ func main() {
 	app.Router.Handle("/query", srv)
 	app.Router.HandleFunc("/ping", pong)
 
-	app.Router.Use(logger.Log) //WIP
+	opt := logger.Options{
+		Rules:   "allow_http_url",
+		Url:     "http://resurface:4001/message",
+		Enabled: true,
+		Queue:   nil,
+	}
+
+	httpLoggerForMux, err := logger.NewHttpLoggerForMuxOptions(opt)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	app.Router.Use(httpLoggerForMux.StartResponse) //WIP
 
 	log.Fatal(http.ListenAndServe(":"+port, &app.Router))
 }
