@@ -51,7 +51,7 @@ func main() {
 	app.Router.HandleFunc("/ping", pong)
 
 	opt := logger.Options{
-		Rules:   "allow_http_url",
+		Rules:   "allow_http_url\nskip_compression\n",
 		Url:     "http://localhost:4001/message",
 		Enabled: true,
 		Queue:   nil,
