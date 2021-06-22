@@ -34,32 +34,6 @@ func pong(w http.ResponseWriter, r *http.Request) { // handler for test ping cal
 	json.NewEncoder(w).Encode(msg)
 }
 
-func LoggerMiddlewareFunc(next http.Handler) http.Handler {
-
-	// option struct to pass to logger
-	// opt := logger.Options{
-	// 	Rules:   "allow_http_url",
-	// 	Url:     "http://resurface:4001/message",
-	// 	Enabled: true,
-	// 	Queue:   nil,
-	// }
-
-	// create new logger instance
-	// httpLoggerForMux, err := logger.NewHttpLoggerForMuxOptions(opt)
-
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// before
-
-		next.ServeHTTP(w, r)
-		// after
-		log.Println(r.Host, r.Method, r.URL, r.RequestURI)
-	})
-}
-
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -78,7 +52,7 @@ func main() {
 
 	opt := logger.Options{
 		Rules:   "allow_http_url",
-		Url:     "http://resurface:4001/message",
+		Url:     "http://localhost:4001/message",
 		Enabled: true,
 		Queue:   nil,
 	}
