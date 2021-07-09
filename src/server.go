@@ -14,7 +14,7 @@ import (
 	"github.com/resurfaceio/test-mux/graph/generated"
 )
 
-const defaultPort = "8080"
+const defaultPort = "5000"
 
 type App struct {
 	Router mux.Router
@@ -51,7 +51,7 @@ func main() {
 	app.Router.HandleFunc("/ping", pong)
 
 	opt := logger.Options{
-		Rules:   "allow_http_url\n",
+		Rules:   "allow_http_url\nskip_compression\n",
 		Url:     "http://localhost:4001/message",
 		Enabled: true,
 		Queue:   nil,

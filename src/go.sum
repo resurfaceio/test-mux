@@ -54,6 +54,8 @@ github.com/resurfaceio/logger-go v0.0.0-20210615203917-83634d111d4a h1:TTHDPWG0K
 github.com/resurfaceio/logger-go v0.0.0-20210615203917-83634d111d4a/go.mod h1:AUl5OeSXxoz0INVhU3XGiLB4SbqHSKG6zM62fmRsE3U=
 github.com/resurfaceio/logger-go v0.0.0-20210617234230-0164f5c405a1 h1:HAw3s0Ot3LTQ+eG4+HMotXLdngWHXD92pNpIdYmI7vc=
 github.com/resurfaceio/logger-go v0.0.0-20210617234230-0164f5c405a1/go.mod h1:AUl5OeSXxoz0INVhU3XGiLB4SbqHSKG6zM62fmRsE3U=
+github.com/resurfaceio/logger-go v0.0.0-20210701204548-c0238e8b7062 h1:k/q6SDLvMUDieef0iHHeKbpFp8eXEIuRikbuddvhjEc=
+github.com/resurfaceio/logger-go v0.0.0-20210701204548-c0238e8b7062/go.mod h1:AUl5OeSXxoz0INVhU3XGiLB4SbqHSKG6zM62fmRsE3U=
 github.com/rs/cors v1.6.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/sergi/go-diff v1.1.0 h1:we8PVUC3FE2uYfodKH/nBHMSetSfHDR6scGdBi+erh0=

@@ -11,7 +11,7 @@ stop:
 	@docker image rmi -f test-mux
 
 ping:
-	@curl "http://localhost:8080/ping"
+	@curl "http://localhost:5000/ping"
 
 restart:
 	@docker-compose stop

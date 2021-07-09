@@ -14,9 +14,8 @@ services:
     image: test-mux
     container_name: mux
     ports:
-      - '8080:8080'
+      - '80:5000'
     env_file:
       - .env
 
-#   ports:
 #     - 'host:container'

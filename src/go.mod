@@ -10,7 +10,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
-	github.com/resurfaceio/logger-go v0.0.0-20210617234230-0164f5c405a1
+	github.com/resurfaceio/logger-go v0.0.0-20210701204548-c0238e8b7062
 	github.com/vektah/gqlparser/v2 v2.2.0
 )
 
