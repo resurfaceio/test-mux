@@ -50,20 +50,20 @@ func main() {
 	app.Router.Handle("/query", srv)
 	app.Router.HandleFunc("/ping", pong)
 
-	opt := logger.Options{
+	options := logger.Options{
 		Rules:   "allow_http_url\nskip_compression\n",
 		Url:     "http://localhost:4001/message",
 		Enabled: true,
 		Queue:   nil,
 	}
 
-	httpLoggerForMux, err := logger.NewHttpLoggerForMuxOptions(opt)
+	httpLoggerForMux, err := logger.NewHttpLoggerForMuxOptions(options)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	app.Router.Use(httpLoggerForMux.StartResponse)
+	app.Router.Use(httpLoggerForMux.LogData)
 
 	log.Fatal(http.ListenAndServe(":"+port, &app.Router))
 }

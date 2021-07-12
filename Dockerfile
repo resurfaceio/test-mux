@@ -8,5 +8,5 @@ RUN go mod download
 
 RUN go build .
 
-EXPOSE 3000
+EXPOSE 5000
 CMD ["./test-mux"]
