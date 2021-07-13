@@ -18,14 +18,13 @@ const defaultPort = "5000"
 
 type App struct {
 	Router mux.Router
-	// DB, WIP add database to app
 }
 
 type message struct {
 	Msg string `json:"msg"`
 }
 
-func pong(w http.ResponseWriter, r *http.Request) { // handler for test ping call
+func pong(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	msg := message{
@@ -51,8 +50,7 @@ func main() {
 	app.Router.HandleFunc("/ping", pong)
 
 	options := logger.Options{
-		Rules:   "allow_http_url\nskip_compression\n",
-		Url:     "http://localhost:4001/message",
+		Rules:   "allow_http_url\n",
 		Enabled: true,
 		Queue:   nil,
 	}
