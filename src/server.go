@@ -9,7 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/mux"
-	"github.com/resurfaceio/logger-go/src/logger"
+	"github.com/resurfaceio/logger-go/logger"
 	"github.com/resurfaceio/test-mux/graph"
 	"github.com/resurfaceio/test-mux/graph/generated"
 )
