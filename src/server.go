@@ -9,7 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gorilla/mux"
-	"github.com/resurfaceio/logger-go/logger"
+	"github.com/resurfaceio/logger-go"
 	"github.com/resurfaceio/test-mux/graph"
 	"github.com/resurfaceio/test-mux/graph/generated"
 )
@@ -51,6 +51,7 @@ func main() {
 
 	options := logger.Options{
 		Rules:   "allow_http_url\n",
+		Url:     "http://localhost:4001/message",
 		Enabled: true,
 		Queue:   nil,
 	}

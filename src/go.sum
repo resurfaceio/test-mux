@@ -51,6 +51,16 @@ github.com/resurfaceio/logger-go v0.0.0-20210712210619-e7293c9a5651 h1:Sjngc8Ld7
 github.com/resurfaceio/logger-go v0.0.0-20210712210619-e7293c9a5651/go.mod h1:AUl5OeSXxoz0INVhU3XGiLB4SbqHSKG6zM62fmRsE3U=
 github.com/resurfaceio/logger-go v0.0.0-20210712235713-e96b70cead84 h1:XSIxNLmj4JJCv5fNkfKe3cYvwB1KZw/FS/PI7Q6O06s=
 github.com/resurfaceio/logger-go v0.0.0-20210712235713-e96b70cead84/go.mod h1:kr7jjY1BgfQGzk9EKY/ZeZoRegJ7C1VY9kdK+U9rphg=
+github.com/resurfaceio/logger-go v0.0.0-20210713191738-e66b6e6d2592 h1:+uwjdDdabinfE6DZ0/9Hniye8LhFZX2dG7bq89J8ktM=
+github.com/resurfaceio/logger-go v0.0.0-20210713191738-e66b6e6d2592/go.mod h1:3TO+Jkd4Ps/FW9cYfkpsGwKfgRh0S0wzzdgS7MjbT5g=
+github.com/resurfaceio/logger-go v0.0.0-20210713212129-44e67fd34773 h1:zrSt7odkpfA//KFpq/Cn5jIulcZSoEFFjKew5UxiIWI=
+github.com/resurfaceio/logger-go v0.0.0-20210713212129-44e67fd34773/go.mod h1:3TO+Jkd4Ps/FW9cYfkpsGwKfgRh0S0wzzdgS7MjbT5g=
+github.com/resurfaceio/logger-go v0.0.0-20210714192618-8e84dffb795f h1:d20peldtxSNjZEBYy+730PuqZTrQ+KyWOrC1KEayU3U=
+github.com/resurfaceio/logger-go v0.0.0-20210714192618-8e84dffb795f/go.mod h1:3TO+Jkd4Ps/FW9cYfkpsGwKfgRh0S0wzzdgS7MjbT5g=
+github.com/resurfaceio/logger-go v0.0.0-20210714214523-46e4598bfce3 h1:AKb3LtSnlEQ34hNRQJjc+nM2eLpenFdMWsm9YLIfzs8=
+github.com/resurfaceio/logger-go v0.0.0-20210714214523-46e4598bfce3/go.mod h1:3TO+Jkd4Ps/FW9cYfkpsGwKfgRh0S0wzzdgS7MjbT5g=
+github.com/resurfaceio/logger-go v0.0.0-20210714235208-9b34157550b2 h1:YWWKbFMP+zyvimLMYtp3WYt86WoeBqzjeAEpn04JiC8=
+github.com/resurfaceio/logger-go v0.0.0-20210714235208-9b34157550b2/go.mod h1:3TO+Jkd4Ps/FW9cYfkpsGwKfgRh0S0wzzdgS7MjbT5g=
 github.com/rs/cors v1.6.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/sergi/go-diff v1.1.0 h1:we8PVUC3FE2uYfodKH/nBHMSetSfHDR6scGdBi+erh0=

@@ -8,9 +8,9 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
-	github.com/resurfaceio/logger-go v0.0.0-20210712235713-e96b70cead84
+	github.com/resurfaceio/logger-go v0.0.0-20210715193301-2172e451c6cf
 	github.com/vektah/gqlparser/v2 v2.2.0
 )
 
 // added for testing with local version of go logger
-// replace github.com/resurfaceio/logger-go => ./../../logger-go
+replace github.com/resurfaceio/logger-go => ./../../logger-go
