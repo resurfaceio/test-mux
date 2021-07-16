@@ -51,7 +51,6 @@ func main() {
 
 	options := logger.Options{
 		Rules:   "allow_http_url\n",
-		Url:     "http://localhost:4001/message",
 		Enabled: true,
 		Queue:   nil,
 	}
