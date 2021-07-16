@@ -13,4 +13,4 @@ require (
 )
 
 // added for testing with local version of go logger
-replace github.com/resurfaceio/logger-go => ./../../logger-go
+// replace github.com/resurfaceio/logger-go => ./../../logger-go
