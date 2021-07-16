@@ -49,6 +49,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/resurfaceio/logger-go v0.0.0-20210715202310-8a143a2013a9 h1:05NGJX/ZtdlOLbVh6uySm29Sdj2w6XR330hDWQb0u8g=
 github.com/resurfaceio/logger-go v0.0.0-20210715202310-8a143a2013a9/go.mod h1:BYqPKk3sKpOtIKnyrMfiC2RmMaWLcReJqb9kjhwLoPU=
+github.com/resurfaceio/logger-go v0.0.0-20210715233308-8a4e9f30208a h1:vv2/yXCDmgvIC5tZQxp6mlQy3Dezbj7xj9XJeS87hDI=
+github.com/resurfaceio/logger-go v0.0.0-20210715233308-8a4e9f30208a/go.mod h1:BYqPKk3sKpOtIKnyrMfiC2RmMaWLcReJqb9kjhwLoPU=
 github.com/rs/cors v1.6.0/go.mod h1:gFx+x8UowdsKA9AchylcLynDq+nNFfI8FkUZdN/jGCU=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/sergi/go-diff v1.1.0 h1:we8PVUC3FE2uYfodKH/nBHMSetSfHDR6scGdBi+erh0=
