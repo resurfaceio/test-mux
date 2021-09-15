@@ -1,16 +1,14 @@
 module github.com/resurfaceio/test-mux
 
-go 1.16
+go 1.15
 
 require (
-	github.com/99designs/gqlgen v0.13.0
-	github.com/agnivade/levenshtein v1.1.1 // indirect
+	github.com/99designs/gqlgen v0.14.0
 	github.com/gorilla/mux v1.8.0
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/mitchellh/mapstructure v1.4.1 // indirect
-	github.com/resurfaceio/logger-go v0.0.0-20210715233308-8a4e9f30208a
+	github.com/hashicorp/golang-lru v0.5.1 // indirect
+	github.com/mattn/go-sqlite3 v1.14.8
+	github.com/mitchellh/mapstructure v0.0.0-20180220230111-00c29f56e238 // indirect
+	github.com/resurfaceio/logger-go v1.2.0
 	github.com/vektah/gqlparser/v2 v2.2.0
+	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
-
-// added for testing with local version of go logger
-// replace github.com/resurfaceio/logger-go => ./../../logger-go

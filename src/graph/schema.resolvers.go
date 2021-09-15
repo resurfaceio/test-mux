@@ -5,43 +5,28 @@ package graph
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 
 	"github.com/resurfaceio/test-mux/graph/generated"
 	"github.com/resurfaceio/test-mux/graph/model"
+	"github.com/resurfaceio/test-mux/internal/links"
 )
 
 func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
-	var Link model.Link
-	var User model.User
-	Link.Address = input.Address
-	Link.Title = input.Title
-	User.Name = "test"
-	Link.User = &User
-	return &Link, nil
-}
-
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-func (r *mutationResolver) RefreshToken(ctx context.Context, input model.RefreshTokenInput) (string, error) {
-	panic(fmt.Errorf("not implemented"))
+	var link links.Link
+	link.Title = input.Title
+	link.Address = input.Address
+	linkID := link.Save()
+	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title: link.Title, Address: link.Address}, nil
 }
 
 func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
-	var links []*model.Link
-	dummyLink := model.Link{
-		Title:   "Resurface test link",
-		Address: "https://resurface.io",
-		User:    &model.User{Name: "pepper"},
+	var resultLinks []*model.Link
+	dbLinks := links.GetAll()
+	for _, link := range dbLinks {
+		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address})
 	}
-	links = append(links, &dummyLink)
-	return links, nil
+	return resultLinks, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

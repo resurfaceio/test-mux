@@ -12,6 +12,7 @@ import (
 	"github.com/resurfaceio/logger-go"
 	"github.com/resurfaceio/test-mux/graph"
 	"github.com/resurfaceio/test-mux/graph/generated"
+	database "github.com/resurfaceio/test-mux/internal/pkg/db"
 )
 
 const defaultPort = "5000"
@@ -34,6 +35,10 @@ func pong(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	database.InitDB()
+	database.Clear()
+	database.Migrate()
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -50,13 +55,13 @@ func main() {
 	app.Router.HandleFunc("/ping", pong)
 
 	options := logger.Options{
-		Rules:   "allow_http_url\n",
+		Url:     "http://localhost:4001/message",
+		Rules:   "allow_http_url\n/request_header:bar/ remove_if /.*foo.*/",
 		Enabled: true,
 		Queue:   nil,
 	}
 
 	httpLoggerForMux, err := logger.NewHttpLoggerForMuxOptions(options)
-
 	if err != nil {
 		log.Fatal(err)
 	}
