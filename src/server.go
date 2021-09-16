@@ -39,6 +39,8 @@ func main() {
 	database.Clear()
 	database.Migrate()
 
+	database.Populate()
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
@@ -55,7 +57,7 @@ func main() {
 	app.Router.HandleFunc("/ping", pong)
 
 	options := logger.Options{
-		Url:     "http://localhost:4001/message",
+		Url:     "http://resurface:4001/message",
 		Rules:   "allow_http_url\n/request_header:bar/ remove_if /.*foo.*/",
 		Enabled: true,
 		Queue:   nil,

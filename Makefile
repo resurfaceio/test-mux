@@ -11,7 +11,7 @@ stop:
 	@docker image rmi -f test-mux
 
 ping:
-	@curl "http://localhost/ping"
+	@curl -H "x-resurface-test: Whale hello there!" "http://localhost/ping"
 
 restart:
 	@docker-compose stop
