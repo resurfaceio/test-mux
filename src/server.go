@@ -36,7 +36,7 @@ func pong(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	database.InitDB()
-	database.Clear()
+	// database.Clear()
 	database.Migrate()
 
 	database.Populate()
@@ -52,8 +52,8 @@ func main() {
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
-	app.Router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	app.Router.Handle("/query", srv)
+	app.Router.Handle("/", srv)
+	app.Router.Handle("/query", playground.Handler("GraphQL playground", "/"))
 	app.Router.HandleFunc("/ping", pong)
 
 	options := logger.Options{
