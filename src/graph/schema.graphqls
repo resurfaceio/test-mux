@@ -1,18 +1,22 @@
-type Link {
+type News {
   id: ID!
   title: String!
-  address: String!
+  body: String!
 }
 
 type Query {
-  links: [Link!]!
+  allNews: [News!]!
 }
 
-input NewLink {
-  title: String!
-  address: String!
+type ok {
+  ok: Boolean!
+}
+
+type AllNews {
+  news: News!
 }
 
 type Mutation {
-  createLink(input: NewLink!): Link!
+  addNews(title: String!, body: String!): AllNews!
+  deleteEverything: ok!
 }
