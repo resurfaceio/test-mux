@@ -29,10 +29,10 @@ func Migrate() {
 	commands := make([]string, 0)
 
 	commands = append(commands, `
-	CREATE TABLE IF NOT EXISTS Links(
+	CREATE TABLE IF NOT EXISTS News(
 		ID INTEGER PRIMARY KEY UNIQUE,
 		Title VARCHAR (255) ,
-		Address VARCHAR (255)
+		Body VARCHAR (255)
 	)`)
 
 	for _, c := range commands {
@@ -45,51 +45,47 @@ func Migrate() {
 
 func Populate() {
 
-	type link struct {
-		title   string
-		address string
+	type news struct {
+		title string
+		body  string
 	}
 
-	linksToAdd := make([]link, 0)
-	linksToAdd = append(linksToAdd, link{
-		title:   "Resurface Site",
-		address: "https://resurface.io",
-	})
-	linksToAdd = append(linksToAdd, link{
-		title:   "Google Home",
-		address: "https://google.com",
-	})
-	linksToAdd = append(linksToAdd, link{
-		title:   "Splunk Site",
-		address: "https://www.splunk.com/",
-	})
-	linksToAdd = append(linksToAdd, link{
-		title:   "Datadog Site",
-		address: "https://www.datadoghq.com/",
-	})
-	linksToAdd = append(linksToAdd, link{
-		title:   "GraphQL Site",
-		address: "https://graphql.org/",
+	newsToAdd := make([]news, 0)
+	newsToAdd = append(newsToAdd, news{
+		title: "Resurface Site",
+		body:  "Hello from the other side",
 	})
 
-	for _, li := range linksToAdd {
-		stmt, err := Db.Prepare("INSERT INTO Links(Title,Address) VALUES(?,?)")
+	for _, li := range newsToAdd {
+		stmt, err := Db.Prepare("INSERT INTO News(Title,Body) VALUES(?,?)")
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		_, err = stmt.Exec(li.title, li.address)
+		_, err = stmt.Exec(li.title, li.body)
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	log.Print("Successfuly added ", len(linksToAdd), " rows to the Links table...\n")
+	log.Print("Successfuly added ", len(newsToAdd), " rows to the News table...\n")
 }
 
 func Clear() {
 	commands := make([]string, 0)
-	commands = append(commands, `DROP TABLE Links`)
+	commands = append(commands, `DROP TABLE News`)
+
+	for _, c := range commands {
+		_, err := Db.Exec(c)
+		if err != nil {
+			log.Fatal("DB table deletion failed, error: ", err)
+		}
+	}
+}
+
+func Truncate() {
+	commands := make([]string, 0)
+	commands = append(commands, `Delete from News`)
 
 	for _, c := range commands {
 		_, err := Db.Exec(c)
