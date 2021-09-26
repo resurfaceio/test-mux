@@ -5,28 +5,38 @@ package graph
 
 import (
 	"context"
+	"log"
 	"strconv"
 
 	"github.com/resurfaceio/test-mux/graph/generated"
 	"github.com/resurfaceio/test-mux/graph/model"
-	"github.com/resurfaceio/test-mux/internal/links"
+	"github.com/resurfaceio/test-mux/internal/news"
+	database "github.com/resurfaceio/test-mux/internal/pkg/db"
 )
 
-func (r *mutationResolver) CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error) {
-	var link links.Link
-	link.Title = input.Title
-	link.Address = input.Address
-	linkID := link.Save()
-	return &model.Link{ID: strconv.FormatInt(linkID, 10), Title: link.Title, Address: link.Address}, nil
+func (r *mutationResolver) AddNews(ctx context.Context, title string, body string) (*model.AllNews, error) {
+	var news news.News
+	news.Title = title
+	news.Body = body
+	newsID := news.Save()
+
+	return &model.AllNews{News: &model.News{ID: strconv.FormatInt(newsID, 10), Title: news.Title, Body: news.Body}}, nil
 }
 
-func (r *queryResolver) Links(ctx context.Context) ([]*model.Link, error) {
-	var resultLinks []*model.Link
-	dbLinks := links.GetAll()
-	for _, link := range dbLinks {
-		resultLinks = append(resultLinks, &model.Link{ID: link.ID, Title: link.Title, Address: link.Address})
+func (r *mutationResolver) DeleteEverything(ctx context.Context) (*model.Ok, error) {
+	database.Truncate()
+	log.Print("Truncated database")
+
+	return &model.Ok{Ok: true}, nil
+}
+
+func (r *queryResolver) AllNews(ctx context.Context) ([]*model.News, error) {
+	var resultNews []*model.News
+	dbNews := news.GetAll()
+	for _, nnews := range dbNews {
+		resultNews = append(resultNews, &model.News{ID: nnews.ID, Title: nnews.Title, Body: nnews.Body})
 	}
-	return resultLinks, nil
+	return resultNews, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
