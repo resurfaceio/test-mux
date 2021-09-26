@@ -18,7 +18,13 @@ restart:
 	@docker-compose up --detach
 
 test:
-	echo "test script cmd goes here"
+	@docker exec -it mux /app/run-test.sh
+
+rebuild-test:
+	@docker stop resurface || true
+	@docker build -t test-mux --no-cache .
+	@docker-compose up --detach
+	@docker exec -it mux bash run-test.sh
 
 clear:
 	@docker system prune -a
