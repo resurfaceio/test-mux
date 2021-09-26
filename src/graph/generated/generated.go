@@ -43,26 +43,36 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	Link struct {
-		Address func(childComplexity int) int
-		ID      func(childComplexity int) int
-		Title   func(childComplexity int) int
+	AllNews struct {
+		News func(childComplexity int) int
 	}
 
 	Mutation struct {
-		CreateLink func(childComplexity int, input model.NewLink) int
+		AddNews          func(childComplexity int, title string, body string) int
+		DeleteEverything func(childComplexity int) int
+	}
+
+	News struct {
+		Body  func(childComplexity int) int
+		ID    func(childComplexity int) int
+		Title func(childComplexity int) int
 	}
 
 	Query struct {
-		Links func(childComplexity int) int
+		AllNews func(childComplexity int) int
+	}
+
+	Ok struct {
+		Ok func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
-	CreateLink(ctx context.Context, input model.NewLink) (*model.Link, error)
+	AddNews(ctx context.Context, title string, body string) (*model.AllNews, error)
+	DeleteEverything(ctx context.Context) (*model.Ok, error)
 }
 type QueryResolver interface {
-	Links(ctx context.Context) ([]*model.Link, error)
+	AllNews(ctx context.Context) ([]*model.News, error)
 }
 
 type executableSchema struct {
@@ -80,45 +90,66 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Link.address":
-		if e.complexity.Link.Address == nil {
+	case "AllNews.news":
+		if e.complexity.AllNews.News == nil {
 			break
 		}
 
-		return e.complexity.Link.Address(childComplexity), true
+		return e.complexity.AllNews.News(childComplexity), true
 
-	case "Link.id":
-		if e.complexity.Link.ID == nil {
+	case "Mutation.addNews":
+		if e.complexity.Mutation.AddNews == nil {
 			break
 		}
 
-		return e.complexity.Link.ID(childComplexity), true
-
-	case "Link.title":
-		if e.complexity.Link.Title == nil {
-			break
-		}
-
-		return e.complexity.Link.Title(childComplexity), true
-
-	case "Mutation.createLink":
-		if e.complexity.Mutation.CreateLink == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createLink_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_addNews_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateLink(childComplexity, args["input"].(model.NewLink)), true
+		return e.complexity.Mutation.AddNews(childComplexity, args["title"].(string), args["body"].(string)), true
 
-	case "Query.links":
-		if e.complexity.Query.Links == nil {
+	case "Mutation.deleteEverything":
+		if e.complexity.Mutation.DeleteEverything == nil {
 			break
 		}
 
-		return e.complexity.Query.Links(childComplexity), true
+		return e.complexity.Mutation.DeleteEverything(childComplexity), true
+
+	case "News.body":
+		if e.complexity.News.Body == nil {
+			break
+		}
+
+		return e.complexity.News.Body(childComplexity), true
+
+	case "News.id":
+		if e.complexity.News.ID == nil {
+			break
+		}
+
+		return e.complexity.News.ID(childComplexity), true
+
+	case "News.title":
+		if e.complexity.News.Title == nil {
+			break
+		}
+
+		return e.complexity.News.Title(childComplexity), true
+
+	case "Query.allNews":
+		if e.complexity.Query.AllNews == nil {
+			break
+		}
+
+		return e.complexity.Query.AllNews(childComplexity), true
+
+	case "ok.ok":
+		if e.complexity.Ok.Ok == nil {
+			break
+		}
+
+		return e.complexity.Ok.Ok(childComplexity), true
 
 	}
 	return 0, false
@@ -184,27 +215,27 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graph/schema.graphqls", Input: `# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
-
-type Link {
+	{Name: "graph/schema.graphqls", Input: `type News {
   id: ID!
   title: String!
-  address: String!
+  body: String!
 }
 
 type Query {
-  links: [Link!]!
+  allNews: [News!]!
 }
 
-input NewLink {
-  title: String!
-  address: String!
+type ok {
+  ok: Boolean!
 }
 
 type Mutation {
-  createLink(input: NewLink!): Link!
+  addNews(title: String!, body: String!): AllNews!
+  deleteEverything: ok!
+}
+
+type AllNews {
+  news: News!
 }
 `, BuiltIn: false},
 }
@@ -214,18 +245,27 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_createLink_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_addNews_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewLink
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewLink2githubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNewLink(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["title"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["title"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["body"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("body"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["body"] = arg1
 	return args, nil
 }
 
@@ -282,7 +322,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Link_id(ctx context.Context, field graphql.CollectedField, obj *model.Link) (ret graphql.Marshaler) {
+func (ec *executionContext) _AllNews_news(ctx context.Context, field graphql.CollectedField, obj *model.AllNews) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -290,7 +330,119 @@ func (ec *executionContext) _Link_id(ctx context.Context, field graphql.Collecte
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:     "Link",
+		Object:     "AllNews",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.News, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.News)
+	fc.Result = res
+	return ec.marshalNNews2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNews(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_addNews(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_addNews_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddNews(rctx, args["title"].(string), args["body"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.AllNews)
+	fc.Result = res
+	return ec.marshalNAllNews2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐAllNews(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteEverything(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteEverything(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Ok)
+	fc.Result = res
+	return ec.marshalNok2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐOk(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _News_id(ctx context.Context, field graphql.CollectedField, obj *model.News) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "News",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -317,7 +469,7 @@ func (ec *executionContext) _Link_id(ctx context.Context, field graphql.Collecte
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Link_title(ctx context.Context, field graphql.CollectedField, obj *model.Link) (ret graphql.Marshaler) {
+func (ec *executionContext) _News_title(ctx context.Context, field graphql.CollectedField, obj *model.News) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -325,7 +477,7 @@ func (ec *executionContext) _Link_title(ctx context.Context, field graphql.Colle
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:     "Link",
+		Object:     "News",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -352,7 +504,7 @@ func (ec *executionContext) _Link_title(ctx context.Context, field graphql.Colle
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Link_address(ctx context.Context, field graphql.CollectedField, obj *model.Link) (ret graphql.Marshaler) {
+func (ec *executionContext) _News_body(ctx context.Context, field graphql.CollectedField, obj *model.News) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -360,7 +512,7 @@ func (ec *executionContext) _Link_address(ctx context.Context, field graphql.Col
 		}
 	}()
 	fc := &graphql.FieldContext{
-		Object:     "Link",
+		Object:     "News",
 		Field:      field,
 		Args:       nil,
 		IsMethod:   false,
@@ -370,7 +522,7 @@ func (ec *executionContext) _Link_address(ctx context.Context, field graphql.Col
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Address, nil
+		return obj.Body, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -387,49 +539,7 @@ func (ec *executionContext) _Link_address(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_createLink(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_createLink_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateLink(rctx, args["input"].(model.NewLink))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Link)
-	fc.Result = res
-	return ec.marshalNLink2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐLink(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_links(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_allNews(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -447,7 +557,7 @@ func (ec *executionContext) _Query_links(ctx context.Context, field graphql.Coll
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Links(rctx)
+		return ec.resolvers.Query().AllNews(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -459,9 +569,9 @@ func (ec *executionContext) _Query_links(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Link)
+	res := resTmp.([]*model.News)
 	fc.Result = res
-	return ec.marshalNLink2ᚕᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐLinkᚄ(ctx, field.Selections, res)
+	return ec.marshalNNews2ᚕᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNewsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1653,40 +1763,44 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 	return ec.marshalO__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐType(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _ok_ok(ctx context.Context, field graphql.CollectedField, obj *model.Ok) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "ok",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Ok, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
-
-func (ec *executionContext) unmarshalInputNewLink(ctx context.Context, obj interface{}) (model.NewLink, error) {
-	var it model.NewLink
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	for k, v := range asMap {
-		switch k {
-		case "title":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
-			it.Title, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "address":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
-			it.Address, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
 
 // endregion **************************** input.gotpl *****************************
 
@@ -1696,29 +1810,19 @@ func (ec *executionContext) unmarshalInputNewLink(ctx context.Context, obj inter
 
 // region    **************************** object.gotpl ****************************
 
-var linkImplementors = []string{"Link"}
+var allNewsImplementors = []string{"AllNews"}
 
-func (ec *executionContext) _Link(ctx context.Context, sel ast.SelectionSet, obj *model.Link) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, linkImplementors)
+func (ec *executionContext) _AllNews(ctx context.Context, sel ast.SelectionSet, obj *model.AllNews) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, allNewsImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Link")
-		case "id":
-			out.Values[i] = ec._Link_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "title":
-			out.Values[i] = ec._Link_title(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "address":
-			out.Values[i] = ec._Link_address(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("AllNews")
+		case "news":
+			out.Values[i] = ec._AllNews_news(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -1748,8 +1852,50 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "createLink":
-			out.Values[i] = ec._Mutation_createLink(ctx, field)
+		case "addNews":
+			out.Values[i] = ec._Mutation_addNews(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteEverything":
+			out.Values[i] = ec._Mutation_deleteEverything(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var newsImplementors = []string{"News"}
+
+func (ec *executionContext) _News(ctx context.Context, sel ast.SelectionSet, obj *model.News) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, newsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("News")
+		case "id":
+			out.Values[i] = ec._News_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "title":
+			out.Values[i] = ec._News_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "body":
+			out.Values[i] = ec._News_body(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -1779,7 +1925,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "links":
+		case "allNews":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -1787,7 +1933,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_links(ctx, field)
+				res = ec._Query_allNews(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2054,9 +2200,50 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var okImplementors = []string{"ok"}
+
+func (ec *executionContext) _ok(ctx context.Context, sel ast.SelectionSet, obj *model.Ok) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, okImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ok")
+		case "ok":
+			out.Values[i] = ec._ok_ok(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) marshalNAllNews2githubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐAllNews(ctx context.Context, sel ast.SelectionSet, v model.AllNews) graphql.Marshaler {
+	return ec._AllNews(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAllNews2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐAllNews(ctx context.Context, sel ast.SelectionSet, v *model.AllNews) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._AllNews(ctx, sel, v)
+}
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
@@ -2088,11 +2275,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) marshalNLink2githubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐLink(ctx context.Context, sel ast.SelectionSet, v model.Link) graphql.Marshaler {
-	return ec._Link(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNLink2ᚕᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐLinkᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Link) graphql.Marshaler {
+func (ec *executionContext) marshalNNews2ᚕᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNewsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.News) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -2116,7 +2299,7 @@ func (ec *executionContext) marshalNLink2ᚕᚖgithubᚗcomᚋresurfaceioᚋtest
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNLink2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐLink(ctx, sel, v[i])
+			ret[i] = ec.marshalNNews2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNews(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2136,19 +2319,14 @@ func (ec *executionContext) marshalNLink2ᚕᚖgithubᚗcomᚋresurfaceioᚋtest
 	return ret
 }
 
-func (ec *executionContext) marshalNLink2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐLink(ctx context.Context, sel ast.SelectionSet, v *model.Link) graphql.Marshaler {
+func (ec *executionContext) marshalNNews2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNews(ctx context.Context, sel ast.SelectionSet, v *model.News) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._Link(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNNewLink2githubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐNewLink(ctx context.Context, v interface{}) (model.NewLink, error) {
-	res, err := ec.unmarshalInputNewLink(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
+	return ec._News(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -2421,6 +2599,20 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNok2githubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐOk(ctx context.Context, sel ast.SelectionSet, v model.Ok) graphql.Marshaler {
+	return ec._ok(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNok2ᚖgithubᚗcomᚋresurfaceioᚋtestᚑmuxᚋgraphᚋmodelᚐOk(ctx context.Context, sel ast.SelectionSet, v *model.Ok) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ok(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
