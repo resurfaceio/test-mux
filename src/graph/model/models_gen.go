@@ -2,13 +2,16 @@
 
 package model
 
-type Link struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Address string `json:"address"`
+type AllNews struct {
+	News *News `json:"news"`
 }
 
-type NewLink struct {
-	Title   string `json:"title"`
-	Address string `json:"address"`
+type News struct {
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	Body  string `json:"body"`
+}
+
+type Ok struct {
+	Ok bool `json:"ok"`
 }
