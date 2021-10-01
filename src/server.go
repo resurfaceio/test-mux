@@ -58,7 +58,7 @@ func main() {
 
 	options := logger.Options{
 		Url:     "http://resurface:4001/message",
-		Rules:   "allow_http_url\n/request_header:bar/ remove_if /.*foo.*/",
+		Rules:   "allow_http_url\nskip_compression",
 		Enabled: true,
 		Queue:   nil,
 	}
