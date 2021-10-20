@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -17,12 +18,21 @@ import (
 
 const defaultPort = "5000"
 
+var count int
+
 type App struct {
 	Router mux.Router
 }
 
 type message struct {
 	Msg string `json:"msg"`
+}
+
+func pongInc(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	count += 1
+	msg := []byte(fmt.Sprint(count))
+	w.Write(msg)
 }
 
 func pong(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +45,7 @@ func pong(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	count = 0
 	database.InitDB()
 	// database.Clear()
 	database.Migrate()
@@ -55,9 +66,10 @@ func main() {
 	app.Router.Handle("/", srv)
 	app.Router.Handle("/query", playground.Handler("GraphQL playground", "/"))
 	app.Router.HandleFunc("/ping", pong)
+	app.Router.HandleFunc("/pingInc", pongInc)
 
 	options := logger.Options{
-		Url:     "http://resurface:4001/message",
+		Url:     "http://localhost:4001/message",
 		Rules:   "allow_http_url\nskip_compression",
 		Enabled: true,
 		Queue:   nil,
